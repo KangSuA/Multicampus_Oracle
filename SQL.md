@@ -14,7 +14,18 @@ SQL
 > DDL : Data Definition Language
 > DB의 테이블과 같은 데이터 구조를 정의하는데 사용되는 명령어
 - CREATE
+```sql
+-- 테이블 생성
+CREATE TABLE tbl_name(
+  column datatype
+  [, column datatype...]
+);
+```
 - DROP
+```sql
+-- 테이블 삭제
+DROP TABLE tbl_name [CASCADE CONSTRAINTS];
+```
 - ALTER
 - RENAME
 - TRUNCATE
@@ -36,6 +47,8 @@ SQL
 ## 4. 트랜잭션저어어
 > TCL : Transaction Control Language
 > 트랜잭션을 처리하는 명령어
-- COMMIT
-- ROLLBACK
+- COMMIT   
+`COMMIT;`
+- ROLLBACK   
+`ROLLBACK;`
 - SAVEPOINT
