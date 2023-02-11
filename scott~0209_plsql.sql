@@ -260,6 +260,95 @@ end;
 
 exec emp_if(7902);
 
+------------------
+-- 부서코드를 입력받아 해당 부서의 사원을 모두 선택하라.
+create or replace procedure emp_ename_sal(i_deptno emp.deptno%type)
+is
+    -- 배열 생성
+    -- 사원명을 보관할 배열형 생성
+    type ename_arr is table of emp.ename%type index by binary_integer;
+    -- 급여를 보관할 배열형 생성
+    type sal_arr is table of emp.sal%type index by binary_integer;
+    -- 입사일을 보관할 배열형 생성
+    type hiredate_arr is table of emp.hiredate%type index by binary_integer;
+    
+    -- 배열형 변수 선언
+    s_ename ename_arr;
+    s_sal sal_arr;
+    s_hiredate hiredate_arr;
+    
+    idx integer := 0;
+begin
+    
+    for e in (select ename, sal, hiredate from emp where deptno=i_deptno) loop
+        idx := idx+1;
+        s_ename(idx) := e.ename;
+        s_sal(idx) := e.sal;
+        s_hiredate(idx) := e.hiredate;
+    end loop;
+    -- 배열에 있는 사원정보 출력하기
+    for i in 1..idx loop -- idptj idx까지 1씩 증가
+        dbms_output.put_line(s_ename(i) || ', ' || s_sal(i) || ', ' || s_hiredate(i));
+    end loop;
+end;
+
+execute emp_ename_sal(20);
+
+-- loop문
+-- exit 조건이 참일때 종료된다.
+create or replace procedure emp_loop_insert(i_start in number, i_deptno in emp.deptno%type)
+is
+    i number;
+begin
+    i := i_start;
+    loop
+        insert into emp(empno, ename, deptno) values(i, 'loop'||i, i_deptno);
+        i:=i+1;
+        exit when i>i_start+5;-- 조건이 참이면 종료
+    end loop;
+    dbms_output.put_line('사원을 등록하였습니다.');
+end;
+
+execute emp_loop_insert(1000,10);
+
+-- while loop문
+-- 조건이 참일때 반복실행
+create or replace procedure emp_while_insert(i_max number, i_deptno emp.deptno%type)
+is
+    v_i number;
+begin
+    v_i := i_max-10;
+    
+    while v_i<i_max loop -- 참일때 반복
+        insert into emp(empno, ename, hiredate, deptno)
+        values(v_i, 'while'||v_i, sysdate, i_deptno);
+        exit when v_i>=i_max-5;
+        v_i := v_i+1;
+    end loop;
+end;
+execute emp_while_insert(3000,20);
+rollback;
+-- 프로시저 지우기
+drop procedure emp_ename_sal;
+
+-- 담당업무를 입력받아 해당사원의 사원번호, 사원명, 담당업무, 급여를 출력하는 프로시저 만들기
+-- execute 프로시저명 ('manager');
+create or replace procedure emp_job_sel(i_job emp.job%type)
+is
+begin
+    for e in (select * from emp where job=upper(i_job)) loop
+        dbms_output.put_line(e.empno||', '||e.ename||', '||e.job||', '||e.sal);
+    end loop;
+end;
+
+execute emp_job_sel('salesman');
+
+select * from user_source;
+select * from emp;
+
+
+
+
 
 
 
